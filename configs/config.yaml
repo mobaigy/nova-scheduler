@@ -1,0 +1,65 @@
+server:
+  http:
+    network: tcp
+    addr: "0.0.0.0:9001"
+    timeout: "1s"
+
+  grpc:
+    network: tcp
+    addr: "0.0.0.0:9002"
+    timeout: "1s"
+
+  task:
+    tasks:
+      - name: "定时运行scheduler"
+        type: "once"
+        schedule: ""
+
+      - name: "定时触发migrator"
+        type: "cron"
+        schedule: "@every 30m"
+
+data:
+  database:
+    addr: "123.57.78.92:8086"
+    user: "root"
+    password: "123456"
+    database: "bitstorm-svr-go"
+    max_idle_conn: 10
+    max_open_conn: 20
+    max_idle_time: 30
+    slow_threshold_millisecond: 100
+
+  redis:
+    addr: "123.57.78.92:6379"
+    password: ""
+    db: 0
+    pool_size: 20
+
+  scheduler:
+    workersNum: 100
+    bucketsNum: 5
+    tryLockSeconds: 70
+    tryLockGapMilliSeconds: 1000
+    successExpireSeconds: 130
+
+  trigger:
+    zrangeGapSeconds: 1
+    workersNum: 10000
+
+  migrator:
+    workersNum: 1000
+    migrateStepMinutes: 30
+
+log:
+  console: true
+  max_size: 100
+  max_backups: 3
+  level: "info"
+  log_path: "./log"
+  filename: "xtimer.log"
+
+micro:
+  lb:
+    addr:
+      - "123.57.78.92:20002"
